@@ -43,6 +43,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -159,12 +161,34 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BangSanPhamController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\BangSanPham.cs">
+      <DependentUpon>QTdb.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LoaiSanPham.cs">
+      <DependentUpon>QTdb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QTdb.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>QTdb.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QTdb.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>QTdb.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\QTdb.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>QTdb.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -178,6 +202,23 @@
     <Content Include="img\banner.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <EntityDeploy Include="Models\QTdb.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>QTdb.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\QTdb.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>QTdb.edmx</DependentUpon>
+      <LastGenOutput>QTdb.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\QTdb.edmx.diagram">
+      <DependentUpon>QTdb.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\QTdb.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>QTdb.edmx</DependentUpon>
+      <LastGenOutput>QTdb.cs</LastGenOutput>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -215,9 +256,15 @@
     <Content Include="Views\Account\Manage.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\BangSanPham\Create.cshtml" />
+    <Content Include="Views\BangSanPham\Delete.cshtml" />
+    <Content Include="Views\BangSanPham\Details.cshtml" />
+    <Content Include="Views\BangSanPham\Edit.cshtml" />
+    <Content Include="Views\BangSanPham\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="audio\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -225,6 +272,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
