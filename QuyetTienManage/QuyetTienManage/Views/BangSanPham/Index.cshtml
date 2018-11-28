@@ -3,69 +3,81 @@
 @{
     ViewBag.Title = "Index";
 }
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
 <h2>Danh Sách Sản Phẩm</h2>
-
+<hr />
 <p>
-    <input type="text" placeholder="Search.." class="pull-left">
-    @Html.ActionLink("Thêm Mới Sản Phẩm", "Create",null, new {@class = "btn btn-primary pull-right"} )
+    @Html.ActionLink("Thêm Mới Sản Phẩm", "Create", null, new { @class = "btn btn-primary pull-right", @style = "margin-bottom: 10px" })
 </p>
-<table class="table table-bordered table-striped table-hover">
-    <tr>
-        <th>
-            Mã Sản Phẩm
-        </th>
-        <th>
-            Tên Sản Phẩm
-        </th>
-        <th>
-            Giá Bán
-        </th>
-        <th>
-            Giá Gốc
-        </th>
-        <th>
-            Giá Góp
-        </th>
-        <th>
-            Số Lượng Tồn
-        </th>
-        <th>
-            Loại Sản Phẩm
-        </th>
-        <th></th>
-    </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.MaSP)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TenSP)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GiaBan) VNĐ
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.GiaGoc) VNĐ
-        </td>
-        <td>
-                       
-            @Html.DisplayFor(modelItem => item.GiaGop) VNĐ
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SoLuongTon)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LoaiSanPham.TenLoai)
-        </td>
-        <td>
-            @Html.ActionLink(" ", "Edit", new { id = item.id }, new { @class = "glyphicon glyphicon-pencil " }) |
-            @Html.ActionLink(" ", "Details", new { id = item.id }, new { @class = "glyphicon glyphicon-list-alt " }) |
-            @Html.ActionLink(" ", "Delete", new { id = item.id }, new { @class = "glyphicon glyphicon-trash " })
-        </td>
-    </tr>
-}
+<table class="table table-bordered table-striped table-hover" id="myTable">
+    <thead>
+        <tr>
+            <th>
+                Mã Sản Phẩm
+            </th>
+            <th>
+                Tên Sản Phẩm
+            </th>
+            <th>
+                Giá Bán
+            </th>
+            <th>
+                Giá Gốc
+            </th>
+            <th>
+                Giá Góp
+            </th>
+            <th>
+                Số Lượng Tồn
+            </th>
+            <th>
+                Loại Sản Phẩm
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaSP)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TenSP)
+                </td>
+                <td>
+                    @String.Format("{0:c0}", item.GiaBan).Remove(0,1) VNĐ
+                </td>
+                <td>
+                    @String.Format("{0:c0}", item.GiaGoc).Remove(0, 1) VNĐ
+                </td>
+                <td>
 
+                    @String.Format("{0:c0}", item.GiaGop).Remove(0, 1) VNĐ
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoLuongTon)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LoaiSanPham.TenLoai)
+                </td>
+                <td>
+                    @Html.ActionLink(" ", "Edit", new { id = item.id }, new { @class = "glyphicon glyphicon-pencil " }) |
+                    @Html.ActionLink(" ", "Details", new { id = item.id }, new { @class = "glyphicon glyphicon-list-alt " }) |
+                    @Html.ActionLink(" ", "Delete", new { id = item.id }, new { @class = "glyphicon glyphicon-trash " })
+                </td>
+            </tr>
+        }
+       
+    </tbody>
 </table>
+@section Scripts{
+    <script type="text/javascript" charset="utf-8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+}
