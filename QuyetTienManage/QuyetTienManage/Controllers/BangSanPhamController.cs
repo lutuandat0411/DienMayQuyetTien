@@ -48,19 +48,30 @@ namespace QuyetTienManage.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham bangsanpham)
+        public ActionResult Create([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham model)
         {
+            CheckBangSanPham(model);
             if (ModelState.IsValid)
             {
-                db.BangSanPhams.Add(bangsanpham);
+                db.BangSanPhams.Add(model);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", bangsanpham.Loai_id);
-            return View(bangsanpham);
+            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
+            return View(model);
         }
 
+        private void CheckBangSanPham(BangSanPham model) 
+        {
+            if (model.GiaGoc < 0)
+                ModelState.AddModelError("GiaGoc", "Giá Gốc phải lớn hơn 0!");
+            if (model.GiaBan < model.GiaGoc)
+                ModelState.AddModelError("GiaBan", "Giá Bán phải lớn hơn giá gốc");
+            if (model.GiaGop < model.GiaBan)
+                ModelState.AddModelError("GiaGop", "Giá Góp phải lớn hơn giá bán");
+
+        }
         // GET: /BangSanPham/Edit/5
         public ActionResult Edit(int? id)
         {
@@ -101,12 +112,12 @@ namespace QuyetTienManage.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            BangSanPham bangsanpham = db.BangSanPhams.Find(id);
-            if (bangsanpham == null)
+            BangSanPham model = db.BangSanPhams.Find(id);
+            if (model == null)
             {
                 return HttpNotFound();
             }
-            return View(bangsanpham);
+            return View(model);
         }
 
         // POST: /BangSanPham/Delete/5
@@ -114,12 +125,12 @@ namespace QuyetTienManage.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            BangSanPham bangsanpham = db.BangSanPhams.Find(id);
-            db.BangSanPhams.Remove(bangsanpham);
+            BangSanPham model = db.BangSanPhams.Find(id);
+            db.BangSanPhams.Remove(model);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        
         protected override void Dispose(bool disposing)
         {
             if (disposing)

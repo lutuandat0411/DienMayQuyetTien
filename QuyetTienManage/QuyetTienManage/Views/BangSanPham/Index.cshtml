@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+<link rel="stylesheet" type="text/css" href="~/Content/dataTables.min.css" />
 
 <h2>Danh Sách Sản Phẩm</h2>
 <hr />
@@ -74,7 +74,7 @@
     </tbody>
 </table>
 @section Scripts{
-    <script type="text/javascript" charset="utf-8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="~/Content/dataTables.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#myTable').DataTable();
