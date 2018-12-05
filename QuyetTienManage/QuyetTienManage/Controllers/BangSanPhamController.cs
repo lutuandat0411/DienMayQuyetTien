@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using QuyetTienManage.Models;
-
+using System.Transactions;
 namespace QuyetTienManage.Controllers
 {
     public class BangSanPhamController : Controller
@@ -22,18 +22,10 @@ namespace QuyetTienManage.Controllers
         }
 
         // GET: /BangSanPham/Details/5
-        public ActionResult Details(int? id)
+        public FileResult Details(String id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BangSanPham bangsanpham = db.BangSanPhams.Find(id);
-            if (bangsanpham == null)
-            {
-                return HttpNotFound();
-            }
-            return View(bangsanpham);
+            var path = Server.MapPath("~/App_Data/" + id);
+            return File(path, "HinhAnh");
         }
 
         // GET: /BangSanPham/Create
@@ -53,9 +45,25 @@ namespace QuyetTienManage.Controllers
             CheckBangSanPham(model);
             if (ModelState.IsValid)
             {
-                db.BangSanPhams.Add(model);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                using (var scope = new TransactionScope())
+                {
+                    db.BangSanPhams.Add(model);
+                    db.SaveChanges();
+
+                    var path = Server.MapPath("~/App_Data");
+                    path = path + "/" + model.id;
+                    if (Request.Files["HinhAnh"] != null &&
+                       Request.Files["HinhAnh"].ContentLength > 0)
+                    {
+                        Request.Files["HinhAnh"].SaveAs(path);
+
+                        scope.Complete(); // approve for transaction
+                        return RedirectToAction("Index");
+                    }
+                    else
+                        ModelState.AddModelError("HinhAnh", "Chưa có hình sản phẩm!");   
+                }
+
             }
 
             ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
@@ -73,19 +81,16 @@ namespace QuyetTienManage.Controllers
 
         }
         // GET: /BangSanPham/Edit/5
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            BangSanPham bangsanpham = db.BangSanPhams.Find(id);
-            if (bangsanpham == null)
+       
+            BangSanPham model = db.BangSanPhams.Find(id);
+            if (model == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", bangsanpham.Loai_id);
-            return View(bangsanpham);
+            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
+            return View(model);
         }
 
         // POST: /BangSanPham/Edit/5
@@ -93,22 +98,35 @@ namespace QuyetTienManage.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham bangsanpham)
+        public ActionResult Edit([Bind(Include="id,MaSP,TenSP,Loai_id,GiaBan,GiaGoc,GiaGop,SoLuongTon")] BangSanPham model)
         {
+            CheckBangSanPham(model);
             if (ModelState.IsValid)
             {
-                db.Entry(bangsanpham).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                using (var scope = new TransactionScope())
+                {
+                    db.Entry(model).State = EntityState.Modified;
+                    db.SaveChanges();
+                    var path = Server.MapPath("~/App_Data");
+                    path = path + "/" + model.id;
+                    if (Request.Files["HinhAnh"] != null &&
+                       Request.Files["HinhAnh"].ContentLength > 0)
+                    {
+                        Request.Files["HinhAnh"].SaveAs(path);
+                    }
+                        scope.Complete(); // approve for transaction
+                        return RedirectToAction("Index");
+                    
+                }
             }
-            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", bangsanpham.Loai_id);
-            return View(bangsanpham);
+            ViewBag.Loai_id = new SelectList(db.LoaiSanPhams, "id", "TenLoai", model.Loai_id);
+            return View(model);
         }
 
         // GET: /BangSanPham/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+           if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -118,6 +136,7 @@ namespace QuyetTienManage.Controllers
                 return HttpNotFound();
             }
             return View(model);
+        
         }
 
         // POST: /BangSanPham/Delete/5
